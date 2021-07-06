@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <style type="text/css">
+        .ui-datepicker .weekend .ui-state-default {
+            background: #FEA;
+        }
+
+        .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+            border: none !important;
+            background: transparent !important;
+            font-weight: normal;
+            color: #1f1e1e !important;
+            height: 8vh; /* Responsive class handling*/
+            width: 4vw;
+        }
+        .ui-datepicker {
+            width: 40vw !important; /* Responsive class handling*/
+        }
+        .ui-datepicker .ui-datepicker-prev {
+                font-size: 0.8em !important;
+        }
+        .ui-datepicker .ui-datepicker-next {
+            font-size: 0.8em !important;
+            left: 92% !important;
+        }
+        .ui-datepicker .ui-datepicker-prev > span, .ui-datepicker .ui-datepicker-next > span {
+           text-decoration: underline !important;
+        }
+        .ui-widget-header {
+            border: none !important;
+            background: transparent !important;
+            color: #fff;
+            font-weight: bold;
+        }
+        .ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year {
+            border: none !important;
+        }
+        .ui-widget-header .ui-icon {
+            background-image: none;
+        }
+        .ui-widget-content .ui-icon {
+            background-image: none !important;
+        }
+        .ui-icon {
+            background-image: none !important;
+        }
+        .ui-datepicker .ui-datepicker-title {
+            margin: 0 10.3em !important;
+            line-height: 1.8em;
+            text-align: center;
+        }
+        .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+            border: none !important;
+            background: transparent !important;
+            font-weight: bold;
+            color: #212121;
+            font-size:14px;
+            cursor: pointer;
+        }
+
+        /*------------ GIVING BACKGROUND COLOR TO DATES ---------------*/
+        .Disburment {
+            background-color: #93f77e !important;
+            color: #000 !important;
+        }
+        .RePayment {
+            background-color: #ff6a00 !important;
+            color: #000 !important;
+        }
+        .Overdue {
+            background-color: #f53c3c !important;
+            color: #000 !important;
+        }
+        .Disburment_label {
+            background: #93f77e;
+            width: 10em;
+            height: 2em;
+            padding: 0px 10px;
+            margin: 0 1%;
+        }
+        .RePayment_label {
+            background: #ff6a00;
+            width: 10em;
+            height: 2em;
+            padding: 0px 10px;
+            margin: 0 1%;
+        }
+        .Overdue_label {
+            background: #f53c3c;
+            width: 10em;
+            height: 2em;
+            padding: 0px 10px;
+            margin: 0 1%;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.9.2/themes/smoothness/jquery-ui.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <div id="datepicker"></div>
+            <div>
+                <span><code class="Disburment_label"></code> Disburment Date</span>
+                <span><code class="RePayment_label"></code> RePayment Date</span>
+                <span><code class="Overdue_label"></code> Overdue</span>
+            </div>
+        </div>
+    </form>
+    <script type="text/javascript">
+        // --- DYNAMIC DATES (MOCK JSON DATA) -----
+        var dates = [{
+            disbursmentDate: "1/12/2022",
+            repyamentDate: "1/13/2022",
+            overDueDate: "1/14/2022",
+            disbursmentDatePrice: "025,230",
+            repyamentDatePrice: "025,33,910",
+            overDueDatePrice: "020,10,910"
+        }, {
+            disbursmentDate: "5/12/2021",
+            repyamentDate: "5/13/2021",
+            overDueDate: "5/14/2021",
+            disbursmentDatePrice: "25,230",
+            repyamentDatePrice: "25,33,910",
+            overDueDatePrice: "20,10,910"
+        },  {
+            disbursmentDate: "7/4/2021",
+            repyamentDate: "7/19/2021",
+            overDueDate: "7/9/2021",
+            disbursmentDatePrice: "05,230",
+            repyamentDatePrice: "15,33,910",
+            overDueDatePrice: "25,10,910"
+        }, {
+            disbursmentDate: "9/1/2021",
+            repyamentDate: "9/13/2021",
+            overDueDate: "9/29/2021",
+            disbursmentDatePrice: "5,230",
+            repyamentDatePrice: "55,33,910",
+            overDueDatePrice: "10,10,910"
+        }, {
+            disbursmentDate: "11/1/2021",
+            repyamentDate: "11/7/2021",
+            overDueDate: "11/9/2021",
+            disbursmentDatePrice: "11,230",
+            repyamentDatePrice: "11,33,910",
+            overDueDatePrice: "11,10,910"
+        }];
+        var eventDate1 = {};
+        var eventDate2 = {};
+        var eventDate3 = {};
+        $(function () {
+            for (let i = 0; i < dates.length; i++) {
+                eventDate1[new Date(dates[i].disbursmentDate)] = new Date(dates[i].disbursmentDate);
+                eventDate2[new Date(dates[i].repyamentDate)] = new Date(dates[i].repyamentDate);
+                eventDate3[new Date(dates[i].overDueDate)] = new Date(dates[i].overDueDate);
+
+                //if (dates[i].disbursmentDate !== null || dates[i].disbursmentDate !== 'undefined') {
+
+                //};
+                //if (dates[i].repyamentDate !== null || dates[i].repyamentDate !== 'undefined') {
+
+                //};
+                //if (dates[i].overDueDate !== null || dates[i].overDueDate !== 'undefined') {
+
+                //};
+                
+            }
+
+            $("#datepicker").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                beforeShowDay: function (date) {
+                    var highlight1 = eventDate1[date];
+                    var highlight2 = eventDate2[date];
+                    var highlight3 = eventDate3[date];
+
+                    if (highlight1) {
+                        return [true, "Disburment", "disbursmentDatePrice"]
+                        
+                    } else if (highlight2) {
+                        return [true, "RePayment", "repyamentDatePrice"]
+
+                    } else if (highlight3) {
+                        return [true, "Overdue", "overDuePrice"]
+                    } else {
+                        return [true, "", ""]
+                    }
+                    //return [true, date.getDay() === 5 || date.getDay() === 6 ? "weekend" : "weekday"];
+                },
+                onChangeMonthYear: function () {
+                    setTimeout(addCustomInformation, 100);
+                }
+            });
+           addCustomInformation();
+            
+        });
+        
+        function addCustomInformation() {
+            //-------------- Removing Left and Right Arrows for Prev and Next Months --
+                $(".ui-datepicker-prev").find("span").removeClass("ui-icon");
+                $(".ui-datepicker-next").find("span").removeClass("ui-icon");
+            //================== Disburmant Due Date =================================
+            $("#datepicker .Disburment").filter(function () {
+                var date = $(this).text();
+                var cm = $(".ui-datepicker-month option:selected").attr("value");
+                var cm1 = Number(cm) + 1;
+                var currentMonth = cm1.toString();
+                var currentYear = $(".ui-datepicker-year option:selected").attr("value");
+
+                for (let i = 0; i < dates.length; i++) {
+                    var monthsList = dates[i].disbursmentDate.split('/')[0];
+                    var datesList = dates[i].disbursmentDate.split('/')[1];
+                    var yearsList = dates[i].disbursmentDate.split('/')[2];
+                    if (date == datesList && currentMonth == monthsList && currentYear == yearsList) {
+                        var price = dates[i].disbursmentDatePrice;
+                        $(this).html(function (i, html) {
+                            return html + `<br><small>${price}</small>`;
+                        });
+                    };
+                }
+            });
+            //================== RePayment Due Date ====================================
+            $("#datepicker .RePayment").filter(function () {
+                var date = $(this).text();
+                var cm = $(".ui-datepicker-month option:selected").attr("value");
+                var cm1 = Number(cm) + 1;
+                var currentMonth = cm1.toString();
+                var currentYear = $(".ui-datepicker-year option:selected").attr("value");
+
+                for (let i = 0; i < dates.length; i++) {
+                    var monthsList = dates[i].repyamentDate.split('/')[0];
+                    var datesList = dates[i].repyamentDate.split('/')[1];
+                    var yearsList = dates[i].repyamentDate.split('/')[2];
+                    if (date == datesList && currentMonth == monthsList && currentYear == yearsList) {
+                        var price = dates[i].repyamentDatePrice;
+                        $(this).html(function (i, html) {
+                            return html + `<br><small>${price}</small>`;
+                        });
+                    };
+                }
+            });
+            //================== Over Due Date ========================================
+            $("#datepicker .Overdue").filter(function () {
+                var date = $(this).text();
+                var cm = $(".ui-datepicker-month option:selected").attr("value");
+                var cm1 = Number(cm) + 1;
+                var currentMonth = cm1.toString();
+                var currentYear = $(".ui-datepicker-year option:selected").attr("value");
+
+                for (let i = 0; i < dates.length; i++) {
+                    
+                    var monthsList = dates[i].overDueDate.split('/')[0];
+                    var datesList = dates[i].overDueDate.split('/')[1];
+                    var yearsList = dates[i].overDueDate.split('/')[2];
+                    if (date == datesList && currentMonth == monthsList && currentYear == yearsList) {
+                        var price = dates[i].overDueDatePrice;
+                        $(this).html(function (i, html) {
+                            return html + `<br><small>${price}</small>`;
+                        });
+                    };
+                }
+            });
+        }
+    </script>
+</body>
+</html>
