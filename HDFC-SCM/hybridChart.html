@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chart</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.4.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0-rc/dist/chartjs-plugin-datalabels.min.js"></script>
+</head>
+<body>
+    <form runat="server">
+        <div style="height: 60vh; width: 80vw; text-align: center;">
+         <h4>Procurment Vs Scale</h4>
+        <canvas id="mixed-chart"></canvas>
+    </div>
+
+    <script type="text/javascript">
+        // Mixed chart
+        var ctx = document.getElementById("mixed-chart");
+        var line1Data = [8550, 15550, 5550, 75550, 15550, 9550, 2550]; // dynamic data
+        var line2Data = [4300,12500,3000,56000,12700,6400,1500 ]; // dynamic data
+        var bar1Data = [8, 15, 5,35,15,9]; // dynamic data
+        var bar2Data = [13, 20, 10, 40, 20, 14]; // dynamic data
+        var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+        var config = {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'PD Discounted',
+                    yAxisID: 'PD Discounted',
+                    type: "line",
+                    borderColor: "orange",
+                    backgroundColor: "orange",
+                    data: line1Data,
+                    fill: false,
+                    datalabels: {
+                        display: true,
+                        font: {
+                            weight: 'bold'
+                        }
+                    },
+                }, {
+                    label: 'Sales Invoices Discounted',
+                    yAxisID: 'PD Discounted',
+                    type: "line",
+                    borderColor: "yellow",
+                    backgroundColor: "yellow",
+                    data: line2Data,
+                        fill: false,
+                    datalabels: {
+                        display: true,
+                        font: {
+                            weight: 'bold'
+                        }
+                    },
+                },
+                {
+                    label: 'Total Procurment',
+                    type: "bar",
+                    backgroundColor: "#0080ff",
+                    data: bar1Data,
+                    datalabels: {
+                        display: false
+                    },
+                }, {
+                    label: 'Total Sales',
+                    type: "bar",
+                    backgroundColor: "#808080",
+                    data: bar2Data,
+                    datalabels: {
+                        display: false
+                    },
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        display: true,
+                        grid: {
+                            display: false,
+                        }
+                    },
+                    y: {
+                        position: 'right',
+		                type: 'linear',
+		                ticks: { display: true, min: 0, beginAtZero: true, max: 120 },
+		                scaleLabel: { display: true, labelString: "TestScale" }
+                    },
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    }
+                },
+                onClick: chartClickEvent
+            },
+            plugins: [ChartDataLabels],
+        };
+        function chartClickEvent(event, array) {
+            // Do some thing on click
+        }
+        var myLiveChart = new Chart(ctx, config);
+    </script>
+
+    </form>
+    <!----------------------------------------------------- HORIZONTAL CHART -------------------------------------->
+	<br /><br /><br />
+	<div style="height: 40vh; width: 60vw; text-align: center; ">
+         <h4>Future Receivable</h4>
+        <canvas id="horozontalBar-chart"></canvas>
+    </div>
+    
+    <script type="text/javascript">
+        // donut chart
+        var horozontalBarChart = document.getElementById("horozontalBar-chart").getContext("2d");
+        var unautorizedData = [20000, 30000, 40000, 50000, 80000, 120000, 130000]; 
+        var days = ["0-7 Days", "8-15 Days", "16-30 Days", "31-60 Days", "61-90 Days", "90+ Days"];
+        new Chart(horozontalBarChart, {
+            type: 'bar',
+            showTooltips: false,
+            data: {
+                labels: days,
+                datasets: [{
+                label: 'Future Receivable',
+                data: unautorizedData,
+                backgroundColor: [
+                  '#0080ff'
+                ],
+                hoverOffset: 6,
+                cutout: '80%',
+                    barPercentage: 0.5,
+                    datalabels: {
+                        display: true,
+                        anchor: 'end',
+                        align: 'end',
+                        offset: 5,
+                        font: {
+                          weight: 'bold',
+                        }
+                    }
+                }],
+            },
+            plugins: [ChartDataLabels],
+            options: {
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                },
+                title: {
+                    display: true,
+                    text: 'Predicted world population (millions) in 2050',
+                },
+                scales: {
+                    y: {
+                    display: true,
+                    grid: {
+                        display: false,
+                    }
+                  }
+                },
+            },
+            
+        });
+    </script>
+</body>
+</html>
